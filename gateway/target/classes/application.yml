@@ -1,0 +1,76 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: message
+          uri: http://localhost:8082
+          predicates:
+            - Path=/messages/**, 
+        - id: app push
+          uri: http://localhost:8083
+          predicates:
+            - Path=/applications/**, 
+        - id: sms
+          uri: http://localhost:8084
+          predicates:
+            - Path=/agencies/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: message
+          uri: http://message:8080
+          predicates:
+            - Path=/messages/**, 
+        - id: app push
+          uri: http://appPush:8080
+          predicates:
+            - Path=/applications/**, 
+        - id: sms
+          uri: http://sms:8080
+          predicates:
+            - Path=/agencies/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
